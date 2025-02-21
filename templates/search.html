@@ -1,71 +1,47 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Search Properties - Inmota</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-</head>
-<body>
-    <nav class="navbar">
-        <div class="nav-brand">Inmota</div>
-        <div class="nav-links">
-            <a href="{{ url_for('home') }}">Home</a>
-            <a href="{{ url_for('search_properties') }}">Search</a>
-            {% if current_user.is_authenticated %}
-                <a href="{{ url_for('properties') }}">My Properties</a>
-                <a href="{{ url_for('logout') }}">Logout</a>
-            {% else %}
-                <a href="{{ url_for('login') }}">Login</a>
-                <a href="{{ url_for('register') }}">Register</a>
-            {% endif %}
-        </div>
-    </nav>
+{% extends "base.html" %}
 
-    <div class="hero-search">
-        <a href="{{ url_for('search_properties') }}" class="big-search-button">
-            Search Properties
-        </a>
-    </div>
+{% block title %}Search Properties{% endblock %}
 
-    <div class="search-container">
-        <div class="search-form">
-            <form method="GET" action="{{ url_for('search_properties') }}">
-                <div class="search-row">
-                    <input type="text" name="query" placeholder="Search by title, description or location" value="{{ request.args.get('query', '') }}">
-                    <select name="property_type">
-                        <option value="">All Types</option>
-                        <option value="house">House</option>
-                        <option value="apartment">Apartment</option>
-                        <option value="commercial">Commercial</option>
-                    </select>
-                </div>
-                <div class="search-row">
-                    <input type="number" name="min_price" placeholder="Min Price" value="{{ request.args.get('min_price', '') }}">
-                    <input type="number" name="max_price" placeholder="Max Price" value="{{ request.args.get('max_price', '') }}">
-                    <button type="submit" class="search-btn">Search</button>
-                </div>
-            </form>
-        </div>
-
-        <div class="properties-grid">
-            {% for property in properties %}
-            <div class="property-card">
-                {% if property.photos %}
-                    <img src="{{ property.photos[0].photo_url }}" alt="{{ property.title }}">
-                {% endif %}
-                <div class="property-info">
-                    <h3>{{ property.title }}</h3>
-                    <p class="location">{{ property.location }}</p>
-                    <p class="price">${{ "{:,.2f}".format(property.price) }}</p>
-                    <p class="details">
-                        {{ property.bedrooms }} beds | {{ property.bathrooms }} baths | {{ property.area }} sqft
-                    </p>
-                    {% if current_user.is_authenticated and property.realtor_id == current_user.id %}
-                        <a href="{{ url_for('edit_property', id=property.id) }}" class="edit-btn">Edit Property</a>
-                    {% endif %}
-                </div>
+{% block content %}
+<div class="search-container">
+    <div class="search-form">
+        <form method="GET" action="{{ url_for('search_properties') }}">
+            <div class="search-row">
+                <input type="text" name="query" placeholder="Search by title, description or location" value="{{ request.args.get('query', '') }}">
+                <select name="property_type">
+                    <option value="">All Types</option>
+                    <option value="house">House</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="commercial">Commercial</option>
+                </select>
             </div>
-            {% endfor %}
-        </div>
+            <div class="search-row">
+                <input type="number" name="min_price" placeholder="Min Price" value="{{ request.args.get('min_price', '') }}">
+                <input type="number" name="max_price" placeholder="Max Price" value="{{ request.args.get('max_price', '') }}">
+                <button type="submit" class="search-btn">Search</button>
+            </div>
+        </form>
     </div>
-</body>
-</html>
+
+    <div class="properties-grid">
+        {% for property in properties %}
+        <div class="property-card">
+            {% if property.photos %}
+                <img src="{{ property.photos[0].photo_url }}" alt="{{ property.title }}">
+            {% endif %}
+            <div class="property-info">
+                <h3>{{ property.title }}</h3>
+                <p class="location">{{ property.location }}</p>
+                <p class="price">${{ "{:,.2f}".format(property.price) }}</p>
+                <p class="details">
+                    {{ property.bedrooms }} beds | {{ property.bathrooms }} baths | {{ property.area }} sqft
+                </p>
+                {% if current_user.is_authenticated and property.realtor_id == current_user.id %}
+                    <a href="{{ url_for('edit_property', id=property.id) }}" class="edit-btn">Edit Property</a>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
