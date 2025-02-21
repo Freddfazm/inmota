@@ -29,9 +29,7 @@ login_manager.login_view = 'login'
 # Separate decorator and function
 @login_manager.user_loader
 def load_user(user_id):
-    return Realtor.query.get(int(user_id))@app.route('/')
-@app.route('/')
-@app.route('/home')  # Adding an additional route for explicit 'home' endpoint
+    return Realtor.query.get(int(user_id))@app.route('/home')  # Adding an additional route for explicit 'home' endpoint
 def home():
     return render_template('index.html')
 
