@@ -194,3 +194,32 @@ if __name__ == '__main__':
         db.create_all()
     port = int(os.environ.get('PORT', 5000))
     app.run(host='0.0.0.0', port=port)
+
+@app.route('/search', methods=['GET'])
+@login_required
+def search_properties():
+    query = request.args.get('query', '')
+    property_type = request.args.get('property_type', '')
+    min_price = request.args.get('min_price', '')
+    max_price = request.args.get('max_price', '')
+    
+    properties_query = Property.query
+    
+    if query:
+        properties_query = properties_query.filter(
+            (Property.title.ilike(f'%{query}%')) |
+            (Property.description.ilike(f'%{query}%')) |
+            (Property.location.ilike(f'%{query}%'))
+        )
+    
+    if property_type:
+        properties_query = properties_query.filter(Property.property_type == property_type)
+        
+    if min_price:
+        properties_query = properties_query.filter(Property.price >= float(min_price))
+        
+    if max_price:
+        properties_query = properties_query.filter(Property.price <= float(max_price))
+    
+    properties = properties_query.all()
+    return render_template('search.html', properties=properties)

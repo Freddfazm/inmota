@@ -3,65 +3,66 @@
 {% block title %}{{ 'Edit' if property else 'Add' }} Property{% endblock %}
 
 {% block content %}
-<div class="row justify-content-center">
-    <div class="col-md-8">
-        <div class="card">
-            <div class="card-header">
-                <h3 class="text-center">{{ 'Edit' if property else 'Add' }} Property</h3>
+<div class="login-wrapper">
+    <div class="login-container">
+        <h2>{% if property %}Edit Property{% else %}Add New Property{% endif %}</h2>
+        
+        <form method="POST" enctype="multipart/form-data" class="login-form">
+            <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" id="title" name="title" value="{{ property.title if property else '' }}" required>
             </div>
-            <div class="card-body">
-                <form method="POST" enctype="multipart/form-data">
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="title" class="form-label">Title</label>
-                            <input type="text" class="form-control" id="title" name="title" value="{{ property.title if property else '' }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="price" class="form-label">Price</label>
-                            <input type="number" class="form-control" id="price" name="price" value="{{ property.price if property else '' }}" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="description" class="form-label">Description</label>
-                        <textarea class="form-control" id="description" name="description" rows="3" required>{{ property.description if property else '' }}</textarea>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6 mb-3">
-                            <label for="location" class="form-label">Location</label>
-                            <input type="text" class="form-control" id="location" name="location" value="{{ property.location if property else '' }}" required>
-                        </div>
-                        <div class="col-md-6 mb-3">
-                            <label for="property_type" class="form-label">Property Type</label>
-                            <select class="form-select" id="property_type" name="property_type" required>
-                                <option value="house">House</option>
-                                <option value="apartment">Apartment</option>
-                                <option value="condo">Condo</option>
-                                <option value="land">Land</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-4 mb-3">
-                            <label for="area" class="form-label">Area (m²)</label>
-                            <input type="number" class="form-control" id="area" name="area" value="{{ property.area if property else '' }}" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="bedrooms" class="form-label">Bedrooms</label>
-                            <input type="number" class="form-control" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
-                        </div>
-                        <div class="col-md-4 mb-3">
-                            <label for="bathrooms" class="form-label">Bathrooms</label>
-                            <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
-                        </div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="photos" class="form-label">Photos</label>
-                        <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*">
-                    </div>
-                    <button type="submit" class="btn btn-primary">Save Property</button>
-                </form>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea id="description" name="description" required>{{ property.description if property else '' }}</textarea>
             </div>
-        </div>
+
+            <div class="form-group">
+                <label for="location">Location</label>
+                <input type="text" id="location" name="location" value="{{ property.location if property else '' }}" required>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="price">Price</label>
+                    <input type="number" id="price" name="price" value="{{ property.price if property else '' }}" required>
+                </div>
+
+                <div class="form-group half">
+                    <label for="area">Area (sqft)</label>
+                    <input type="number" id="area" name="area" value="{{ property.area if property else '' }}" required>
+                </div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
+                </div>
+
+                <div class="form-group half">
+                    <label for="bathrooms">Bathrooms</label>
+                    <input type="number" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="property_type">Property Type</label>
+                <select id="property_type" name="property_type" required>
+                    <option value="house">House</option>
+                    <option value="apartment">Apartment</option>
+                    <option value="commercial">Commercial</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="photos">Photos</label>
+                <input type="file" id="photos" name="photos" multiple accept="image/*">
+            </div>
+
+            <button type="submit" class="btn-login">{% if property %}Update Property{% else %}Add Property{% endif %}</button>
+        </form>
     </div>
 </div>
 {% endblock %}
