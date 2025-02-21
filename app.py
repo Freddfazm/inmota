@@ -223,3 +223,13 @@ def search_properties():
     
     properties = properties_query.all()
     return render_template('search.html', properties=properties)
+
+@app.route('/property/delete/<int:id>', methods=['GET'])
+@login_required
+def delete_property(id):
+    property = Property.query.get_or_404(id)
+    if property.realtor_id != current_user.id:
+        abort(403)
+    db.session.delete(property)
+    db.session.commit()
+    return redirect(url_for('properties'))
