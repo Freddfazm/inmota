@@ -20,6 +20,12 @@
         </div>
     </nav>
 
+    <div class="hero-search">
+        <a href="{{ url_for('search_properties') }}" class="big-search-button">
+            Search Properties
+        </a>
+    </div>
+
     <div class="search-container">
         <div class="search-form">
             <form method="GET" action="{{ url_for('search_properties') }}">

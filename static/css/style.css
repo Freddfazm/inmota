@@ -289,3 +289,23 @@ input[type="file"] {
 .edit-btn:hover {
     background-color: #357abd;
 }
+
+.hero-search {
+    text-align: center;
+    padding: 2rem;
+}
+
+.big-search-button {
+    display: inline-block;
+    padding: 1rem 2rem;
+    background-color: #007bff;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    font-size: 1.2rem;
+    transition: background-color 0.3s;
+}
+
+.big-search-button:hover {
+    background-color: #0056b3;
+}
