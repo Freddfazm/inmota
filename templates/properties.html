@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Properties{% endblock %}
+
+{% block content %}
+<div class="row mb-4">
+    <div class="col">
+        <h2>My Properties</h2>
+    </div>
+    <div class="col text-end">
+        <a href="{{ url_for('add_property') }}" class="btn btn-primary">Add Property</a>
+    </div>
+</div>
+
+<div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for property in properties %}
+    <div class="col">
+        <div class="card h-100">
+            {% if property.photos %}
+            <img src="{{ property.photos[0].photo_url }}" class="card-img-top" alt="{{ property.title }}">
+            {% endif %}
+            <div class="card-body">
+                <h5 class="card-title">{{ property.title }}</h5>
+                <p class="card-text">{{ property.description[:150] }}...</p>
+                <ul class="list-unstyled">
+                    <li><strong>Price:</strong> ${{ property.price }}</li>
+                    <li><strong>Location:</strong> {{ property.location }}</li>
+                    <li><strong>Type:</strong> {{ property.property_type }}</li>
+                    <li><strong>Status:</strong> {{ property.status }}</li>
+                </ul>
+                <a href="{{ url_for('edit_property', id=property.id) }}" class="btn btn-sm btn-primary">Edit</a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

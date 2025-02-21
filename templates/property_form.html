@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+
+{% block title %}{{ 'Edit' if property else 'Add' }} Property{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="text-center">{{ 'Edit' if property else 'Add' }} Property</h3>
+            </div>
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" name="title" value="{{ property.title if property else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="price" class="form-label">Price</label>
+                            <input type="number" class="form-control" id="price" name="price" value="{{ property.price if property else '' }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3" required>{{ property.description if property else '' }}</textarea>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="location" class="form-label">Location</label>
+                            <input type="text" class="form-control" id="location" name="location" value="{{ property.location if property else '' }}" required>
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label for="property_type" class="form-label">Property Type</label>
+                            <select class="form-select" id="property_type" name="property_type" required>
+                                <option value="house">House</option>
+                                <option value="apartment">Apartment</option>
+                                <option value="condo">Condo</option>
+                                <option value="land">Land</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <label for="area" class="form-label">Area (m²)</label>
+                            <input type="number" class="form-control" id="area" name="area" value="{{ property.area if property else '' }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="bedrooms" class="form-label">Bedrooms</label>
+                            <input type="number" class="form-control" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <label for="bathrooms" class="form-label">Bathrooms</label>
+                            <input type="number" class="form-control" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="photos" class="form-label">Photos</label>
+                        <input type="file" class="form-control" id="photos" name="photos" multiple accept="image/*">
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Property</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
