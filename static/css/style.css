@@ -39,28 +39,29 @@
 
 body {
     margin: 0;
-    margin-top: 80px;
-    padding: 0;
+    padding: 80px 0 0 0; /* Top padding for navbar */
     font-family: 'Arial', sans-serif;
     background-color: #f5f5f5;
-    min-height: calc(100vh - 80px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
+    min-height: 100vh;
 }
 .login-wrapper {
     width: 100%;
     max-width: 400px;
     padding: 20px;
+    margin: 0 auto; /* This centers the wrapper */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 100px); /* Accounts for navbar height */
 }
 
 .login-container {
+    width: 100%; /* Takes full width of wrapper */
     background: white;
     padding: 40px;
     border-radius: 10px;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 }
-
 h2 {
     text-align: center;
     color: #333;
