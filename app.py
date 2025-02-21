@@ -4,32 +4,23 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 import os
 from models import db, Realtor, Property, PropertyPhoto
-import boto3
-from botocore.exceptions import ClientError
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'your-secret-key'  
+app.config['SECRET_KEY'] = 'your-secret-key'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'postgresql://u2cch0htlm8mg2:p79a5b6c1cdc7e523a1978c34d01c651f82ebb1c599d9e3b0dd95a0e27898d8cf@c9mq4861d16jlm.cluster-czrs8kj4isg7.us-east-1.rds.amazonaws.com:5432/d32ncghf1gn534'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['UPLOAD_FOLDER'] = 'static/uploads'
 
-# S3 configuration at root level
-s3 = boto3.client(
-    's3',
-    aws_access_key_id=os.environ.get('AWS_ACCESS_KEY_ID'),
-    aws_secret_access_key=os.environ.get('AWS_SECRET_ACCESS_KEY')
-)
-BUCKET_NAME = 'inmota'
-
 db.init_app(app)
-# Initialize login manager
 login_manager = LoginManager(app)
 login_manager.login_view = 'login'
 
-# Separate decorator and function
 @login_manager.user_loader
 def load_user(user_id):
-    return Realtor.query.get(int(user_id))@app.route('/home')  # Adding an additional route for explicit 'home' endpoint
+    return Realtor.query.get(int(user_id))
+
+@app.route('/')
+@app.route('/home')
 def home():
     return render_template('index.html')
 
