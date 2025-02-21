@@ -44,13 +44,19 @@ def login():
         password = request.form.get('password')
         
         realtor = Realtor.query.filter_by(email=email).first()
-        if realtor and check_password_hash(realtor.password_hash, password):
-            login_user(realtor)
-            return redirect(url_for('properties'))
         
-        flash('Invalid email or password', 'error')
+        if not realtor:
+            flash('Email is not registered. Please register first.', 'error')
+            return render_template('login.html')
+            
+        if not check_password_hash(realtor.password_hash, password):
+            flash('Incorrect password. Please try again.', 'error')
+            return render_template('login.html')
+            
+        login_user(realtor)
+        return redirect(url_for('properties'))
+        
     return render_template('login.html')
-
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
