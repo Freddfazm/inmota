@@ -22,12 +22,14 @@ s3 = boto3.client(
 BUCKET_NAME = 'inmota'
 
 db.init_app(app)
+# Initialize login manager
 login_manager = LoginManager(app)
-login_manager.login_view = 'login'@login_manager.user_loader
-def load_user(user_id):
-    return Realtor.query.get(int(user_id))
+login_manager.login_view = 'login'
 
-@app.route('/')
+# Separate decorator and function
+@login_manager.user_loader
+def load_user(user_id):
+    return Realtor.query.get(int(user_id))@app.route('/')
 def home():
     return render_template('index.html')
 
