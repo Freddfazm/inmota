@@ -204,7 +204,7 @@ def search_properties():
     max_price = request.args.get('max_price', '')
     
     properties_query = Property.query
-    
+    #this is a push
     if query:
         properties_query = properties_query.filter(
             (Property.title.ilike(f'%{query}%')) |
