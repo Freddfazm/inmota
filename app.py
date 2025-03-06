@@ -284,6 +284,41 @@ def profile():
         
     return render_template('profile.html')
 
+@app.route('/delete_image/<int:id>', methods=['POST'])
+@login_required
+def delete_image(id):
+    try:
+        # Get the image
+        image = PropertyPhoto.query.get_or_404(id)
+        
+        # Check if the current user owns the property associated with this image
+        property = Property.query.get(image.property_id)
+        if property.realtor_id != current_user.id:
+            return jsonify({"success": False, "message": "You don't have permission to delete this image"}), 403
+        
+        # Extract filename from S3 URL
+        filename = image.photo_url.split('/')[-1]
+        
+        # Delete from S3
+        try:
+            s3.delete_object(
+                Bucket=S3_BUCKET,
+                Key=filename
+            )
+        except Exception as e:
+            print(f"Error deleting from S3: {e}")
+            # Continue with DB deletion even if S3 deletion fails
+        
+        # Delete from database
+        db.session.delete(image)
+        db.session.commit()
+        
+        return jsonify({"success": True})
+    except Exception as e:
+        db.session.rollback()
+        print(f"Error in delete_image: {e}")
+        return jsonify({"success": False, "message": str(e)}), 500
+
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
