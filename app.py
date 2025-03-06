@@ -236,6 +236,7 @@ def delete_property(id):
     return redirect(url_for('properties'))
 
 @app.route('/property/details/<int:id>', methods=['GET'])
+@app.route('/property/details/<int:id>', methods=['GET'])
 def property_details(id):
     property = Property.query.get_or_404(id)
     
