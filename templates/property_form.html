@@ -119,13 +119,15 @@
                             <input type="date" id="list_date" name="list_date" value="{{ property.list_date.strftime('%Y-%m-%d') if property and property.list_date else '' }}">
                         </div>
                         
-                        <div class="form-group half">
+                        <!-- Off Market Date - Only visible for Cancelado status -->
+                        <div class="form-group half conditional-field" id="off_market_date_group">
                             <label for="off_market_date">Off Market Date</label>
                             <input type="date" id="off_market_date" name="off_market_date" value="{{ property.off_market_date.strftime('%Y-%m-%d') if property and property.off_market_date else '' }}">
                         </div>
                     </div>
                     
-                    <div class="form-row">
+                    <!-- Close Date and Price - Only visible for Vendido status -->
+                    <div class="form-row conditional-field" id="close_fields_group">
                         <div class="form-group half">
                             <label for="close_date">Close Date</label>
                             <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
@@ -135,8 +137,7 @@
                             <label for="close_price">Close Price</label>
                             <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
                         </div>
-                    </div>
-                </div>            </div>
+                    </div>                </div>            </div>
             
             <!-- Full Width Elements -->
             <div class="form-full-width">
@@ -384,4 +385,47 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Get the relevant elements
+        const statusSelect = document.getElementById('list_status');
+        const closeFieldsGroup = document.getElementById('close_fields_group');
+        const offMarketDateGroup = document.getElementById('off_market_date_group');
+        const closeDateInput = document.getElementById('close_date');
+        const closePriceInput = document.getElementById('close_price');
+        const offMarketDateInput = document.getElementById('off_market_date');
+        
+        // Function to update field visibility based on selected status
+        function updateFieldVisibility() {
+            const selectedStatus = statusSelect.value;
+            
+            // For Close Date and Price fields (show only when Vendido)
+            if (selectedStatus === 'Vendido') {
+                closeFieldsGroup.style.display = 'flex';
+                closeDateInput.setAttribute('required', 'required');
+                closePriceInput.setAttribute('required', 'required');
+            } else {
+                closeFieldsGroup.style.display = 'none';
+                closeDateInput.removeAttribute('required');
+                closePriceInput.removeAttribute('required');
+            }
+            
+            // For Off Market Date field (show only when Cancelado)
+            if (selectedStatus === 'Cancelado') {
+                offMarketDateGroup.style.display = 'block';
+                offMarketDateInput.setAttribute('required', 'required');
+            } else {
+                offMarketDateGroup.style.display = 'none';
+                offMarketDateInput.removeAttribute('required');
+            }
+        }
+        
+        // Set initial state
+        updateFieldVisibility();
+        
+        // Add event listener to update when status changes
+        statusSelect.addEventListener('change', updateFieldVisibility);
+    });
+    </script>
 {% endblock %}

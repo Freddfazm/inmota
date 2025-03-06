@@ -163,6 +163,11 @@ a:hover {
   flex: 1;
 }
 
+.conditional-field {
+  display: none;
+  transition: all 0.3s ease;
+}
+
 label {
   display: block;
   margin-bottom: 0.5rem;
@@ -563,32 +568,85 @@ footer {
 
 /* ===== PROFILE PAGE ===== */
 .profile-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 2rem;
-  background-color: var(--card-color);
-  border-radius: 4px;
-  box-shadow: var(--box-shadow);
-}
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+    background-color: var(--card-color);
+    border-radius: 4px;
+    box-shadow: var(--box-shadow);
+  }
 
 /* ===== MOBILE RESPONSIVE ===== */
 @media (max-width: 768px) {
-  .nav-toggle {
-    display: block;
+    .nav-toggle {
+      display: block;
+    }
+  
+    .nav-links {
+      position: fixed;
+      top: 60px;
+      left: 0;
+      right: 0;
+      background-color: var(--primary-color);
+      flex-direction: column;
+      padding: 1rem;
+      gap: 1rem;
+      transform: translateY(-100%);
+      transition: transform 0.3s ease;
+      z-index: 99;
+    }
+  
+    .nav-links.active {
+      transform: translateY(0);
+    }
+  
+    .form-row {
+      flex-direction: column;
+      gap: 1.5rem;
+    }
+    
+    .three-col {
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    
+    .form-columns {
+      flex-direction: column;
+    }
+    
+    .properties-grid {
+      grid-template-columns: 1fr;
+    }
+    
+    .property-features {
+      flex-direction: column;
+      gap: 1rem;
+    }
+    
+    .image-carousel {
+      height: 250px;
+    }
+    
+    .search-row {
+      flex-direction: column;
+      gap: 1rem;
+    }
   }
-
-  .nav-links {
-    position: fixed;
-    top: 60px;
-    left: 0;
-    right: 0;
-    background-color: var(--primary-color);
-    flex-direction: column;
-    padding: 1rem;
-    gap: 1rem;
-    transform: translateY(-100%);
-    transition: transform 0.3s ease;
-    z-index: 99;
+  
+  @media (max-width: 480px) {
+    .login-container {
+      padding: 1.5rem;
+    }
+    
+    h1 { font-size: 2rem; }
+    h2 { font-size: 1.75rem; }
+    h3 { font-size: 1.25rem; }
+    
+    .image-carousel {
+      height: 200px;
+    }
   }
-
-  .nav
+  .conditional-field {
+    display: none; /* Hidden by default */
+    transition: all 0.3s ease;
+  }
