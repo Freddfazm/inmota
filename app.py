@@ -35,8 +35,9 @@ def load_user(user_id):
 @app.route('/')
 @app.route('/home')
 def home():
+    if current_user.is_authenticated:
+        return redirect(url_for('properties'))
     return render_template('index.html')
-
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
