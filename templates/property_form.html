@@ -12,7 +12,6 @@
             <div class="image-carousel">
                 {% for image in property.images %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <!-- Use the direct photo_url instead of constructing a path -->
                     <img src="{{ image.photo_url }}" alt="Property image">
                     <div class="image-controls">
                         <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">Delete</button>
@@ -59,14 +58,19 @@
             </div>
 
             <div class="form-row">
-                <div class="form-group half">
+                <div class="form-group third">
                     <label for="bedrooms">Bedrooms</label>
                     <input type="number" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
                 </div>
 
-                <div class="form-group half">
+                <div class="form-group third">
                     <label for="bathrooms">Bathrooms</label>
                     <input type="number" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
+                </div>
+                
+                <div class="form-group third">
+                    <label for="garage_spaces">Garage Spaces</label>
+                    <input type="number" id="garage_spaces" name="garage_spaces" value="{{ property.garage_spaces if property else '0' }}" min="0" required>
                 </div>
             </div>
 
@@ -90,7 +94,7 @@
     </div>
 </div>
 
-<!-- CSS for the carousel -->
+<!-- CSS for the carousel and additional styling -->
 <style>
 .image-carousel-container {
     position: relative;
@@ -177,6 +181,17 @@
 
 .indicator.active {
     background-color: white;
+}
+
+/* Style for three columns layout */
+.form-row .third {
+    width: 32%;
+    display: inline-block;
+    margin-right: 1%;
+}
+
+.form-row .third:last-child {
+    margin-right: 0;
 }
 </style>
 

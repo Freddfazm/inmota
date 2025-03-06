@@ -127,6 +127,7 @@ def add_property():
             area=float(request.form.get('area')),
             bedrooms=int(request.form.get('bedrooms')),
             bathrooms=int(request.form.get('bathrooms')),
+            garage_spaces=int(request.form.get('garage_spaces', 0)),
             status='available'
         )
         
@@ -143,8 +144,7 @@ def add_property():
                             property_id=property.id,
                             photo_url=s3_url
                         )
-                        db.session.add(property_photo)
-            
+                        db.session.add(property_photo)            
             db.session.commit()
         
         flash('Property added successfully!', 'success')

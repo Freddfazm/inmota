@@ -36,12 +36,12 @@ class Property(db.Model):
     area = db.Column(db.Numeric(10, 2), nullable=False)
     bedrooms = db.Column(db.Integer, nullable=False)
     bathrooms = db.Column(db.Integer, nullable=False)
+    garage_spaces = db.Column(db.Integer, nullable=False, default=0)
     status = db.Column(db.String(20), nullable=False)
     created_at = db.Column(db.DateTime, default=db.func.now())
     updated_at = db.Column(db.DateTime, default=db.func.now(), onupdate=db.func.now())
 
     photos = db.relationship('PropertyPhoto', backref='property', lazy=True)
-
 class PropertyPhoto(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     property_id = db.Column(db.Integer, db.ForeignKey('property.id'), nullable=False)
