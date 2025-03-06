@@ -37,7 +37,8 @@ def load_user(user_id):
 def home():
     if not current_user.is_authenticated:
         return redirect(url_for('login'))
-    return render_template('index.html')@app.route('/login', methods=['GET', 'POST'])
+    return render_template('index.html')
+@app.route('/login', methods=['GET', 'POST'])
 def login():
     if request.method == 'POST':
         email = request.form.get('email')
