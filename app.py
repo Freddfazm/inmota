@@ -57,6 +57,7 @@ def login():
         return redirect(url_for('properties'))
         
     return render_template('login.html')
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if request.method == 'POST':
@@ -127,7 +128,6 @@ def add_property():
             area=float(request.form.get('area')),
             bedrooms=int(request.form.get('bedrooms')),
             bathrooms=int(request.form.get('bathrooms')),
-            garage_spaces=int(request.form.get('garage_spaces', 0)),
             status='available'
         )
         
@@ -144,7 +144,8 @@ def add_property():
                             property_id=property.id,
                             photo_url=s3_url
                         )
-                        db.session.add(property_photo)            
+                        db.session.add(property_photo)
+            
             db.session.commit()
         
         flash('Property added successfully!', 'success')
@@ -187,8 +188,6 @@ def edit_property(id):
         flash('Property updated successfully!', 'success')
         return redirect(url_for('properties'))
     
-    # Make sure all property images are passed to the template
-    property.images = PropertyPhoto.query.filter_by(property_id=property.id).all()
     return render_template('property_form.html', property=property)
 
 if __name__ == '__main__':
@@ -206,7 +205,7 @@ def search_properties():
     max_price = request.args.get('max_price', '')
     
     properties_query = Property.query
-    #this is a push
+    
     if query:
         properties_query = properties_query.filter(
             (Property.title.ilike(f'%{query}%')) |
@@ -236,10 +235,8 @@ def delete_property(id):
     db.session.commit()
     return redirect(url_for('properties'))
 
-@app.route('/delete_image/<int:image_id>', methods=['POST'])
-@login_required
-@app.route('/property/view/<int:id>', methods=['GET'])
-def view_property(id):
+@app.route('/property/details/<int:id>', methods=['GET'])
+def property_details(id):
     property = Property.query.get_or_404(id)
     
     # Make sure all property images are available for the template
