@@ -190,12 +190,6 @@ def edit_property(id):
     
     return render_template('property_form.html', property=property)
 
-if __name__ == '__main__':
-    with app.app_context():
-        db.create_all()
-    port = int(os.environ.get('PORT', 5000))
-    app.run(host='0.0.0.0', port=port)
-
 @app.route('/search', methods=['GET'])
 @login_required
 def search_properties():
@@ -236,7 +230,6 @@ def delete_property(id):
     return redirect(url_for('properties'))
 
 @app.route('/property/details/<int:id>', methods=['GET'])
-@app.route('/property/details/<int:id>', methods=['GET'])
 def property_details(id):
     property = Property.query.get_or_404(id)
     
@@ -244,3 +237,54 @@ def property_details(id):
     property.photos = PropertyPhoto.query.filter_by(property_id=property.id).all()
     
     return render_template('property_view.html', property=property)
+
+@app.route('/profile', methods=['GET', 'POST'])
+@login_required
+def profile():
+    if request.method == 'POST':
+        # Get form data
+        name = request.form.get('name')
+        email = request.form.get('email')
+        phone = request.form.get('phone')
+        current_password = request.form.get('current_password')
+        new_password = request.form.get('new_password')
+        confirm_password = request.form.get('confirm_password')
+        
+        # Validate email isn't already taken by another user
+        if email != current_user.email:
+            existing_user = Realtor.query.filter_by(email=email).first()
+            if existing_user:
+                flash('Email already in use by another account', 'error')
+                return render_template('profile.html')
+        
+        # Update basic info
+        current_user.name = name
+        current_user.email = email
+        current_user.phone = phone
+        
+        # Handle password change if requested
+        if current_password and new_password and confirm_password:
+            # Verify current password
+            if not check_password_hash(current_user.password_hash, current_password):
+                flash('Current password is incorrect', 'error')
+                return render_template('profile.html')
+            
+            # Verify passwords match
+            if new_password != confirm_password:
+                flash('New passwords do not match', 'error')
+                return render_template('profile.html')
+                
+            # Update password
+            current_user.password_hash = generate_password_hash(new_password)
+        
+        db.session.commit()
+        flash('Profile updated successfully', 'success')
+        return redirect(url_for('profile'))
+        
+    return render_template('profile.html')
+
+if __name__ == '__main__':
+    with app.app_context():
+        db.create_all()
+    port = int(os.environ.get('PORT', 5000))
+    app.run(host='0.0.0.0', port=port)
