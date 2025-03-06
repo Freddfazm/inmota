@@ -12,7 +12,8 @@
             <div class="image-carousel">
                 {% for image in property.images %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
-                    <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" alt="Property image">
+                    <!-- Use the direct photo_url instead of constructing a path -->
+                    <img src="{{ image.photo_url }}" alt="Property image">
                     <div class="image-controls">
                         <button type="button" class="delete-image-btn" data-image-id="{{ image.id }}">Delete</button>
                     </div>
@@ -72,9 +73,9 @@
             <div class="form-group">
                 <label for="property_type">Property Type</label>
                 <select id="property_type" name="property_type" required>
-                    <option value="house">House</option>
-                    <option value="apartment">Apartment</option>
-                    <option value="commercial">Commercial</option>
+                    <option value="house" {% if property and property.property_type == 'house' %}selected{% endif %}>House</option>
+                    <option value="apartment" {% if property and property.property_type == 'apartment' %}selected{% endif %}>Apartment</option>
+                    <option value="commercial" {% if property and property.property_type == 'commercial' %}selected{% endif %}>Commercial</option>
                 </select>
             </div>
 
@@ -232,8 +233,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 fetch('/delete_image/' + imageId, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token() if csrf_token else "" }}'
+                        'Content-Type': 'application/json'
                     }
                 })
                 .then(response => response.json())
@@ -253,6 +253,11 @@ document.addEventListener('DOMContentLoaded', function() {
                         
                         // Update the carousel
                         updateCarousel();
+                        
+                        // If no images left, hide the carousel
+                        if (items.length === 0) {
+                            document.querySelector('.image-carousel-container').style.display = 'none';
+                        }
                     } else {
                         alert('Failed to delete image: ' + data.message);
                     }
