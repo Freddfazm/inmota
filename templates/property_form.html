@@ -120,17 +120,23 @@
                         </div>
                         
                         <div class="form-group half">
-                            <label for="close_date">Close Date</label>
-                            <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
+                            <label for="off_market_date">Off Market Date</label>
+                            <input type="date" id="off_market_date" name="off_market_date" value="{{ property.off_market_date.strftime('%Y-%m-%d') if property and property.off_market_date else '' }}">
                         </div>
                     </div>
                     
-                    <div class="form-group">
-                        <label for="close_price">Close Price</label>
-                        <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="close_date">Close Date</label>
+                            <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
+                        </div>
+                        
+                        <div class="form-group half">
+                            <label for="close_price">Close Price</label>
+                            <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div>            </div>
             
             <!-- Full Width Elements -->
             <div class="form-full-width">
