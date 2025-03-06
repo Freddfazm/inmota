@@ -7,10 +7,10 @@
     <div class="login-container">
         <h2>{% if property %}Edit Property{% else %}Add New Property{% endif %}</h2>
         
-        {% if property and property.images %}
+        {% if property and property.photos %}
         <div class="image-carousel-container">
             <div class="image-carousel">
-                {% for image in property.images %}
+                {% for image in property.photos %}
                 <div class="carousel-item {% if loop.first %}active{% endif %}">
                     <img src="{{ image.photo_url }}" alt="Property image">
                     <div class="image-controls">
@@ -22,7 +22,7 @@
             <button class="carousel-prev">❮</button>
             <button class="carousel-next">❯</button>
             <div class="carousel-indicators">
-                {% for image in property.images %}
+                {% for image in property.photos %}
                 <span class="indicator {% if loop.first %}active{% endif %}" data-index="{{ loop.index0 }}"></span>
                 {% endfor %}
             </div>
@@ -36,8 +36,13 @@
             </div>
 
             <div class="form-group">
-                <label for="description">Description</label>
+                <label for="description">Short Description</label>
                 <textarea id="description" name="description" required>{{ property.description if property else '' }}</textarea>
+            </div>
+            
+            <div class="form-group">
+                <label for="property_description">Detailed Property Description (max 5000 chars)</label>
+                <textarea id="property_description" name="property_description" rows="5" maxlength="5000">{{ property.property_description if property and property.property_description else '' }}</textarea>
             </div>
 
             <div class="form-group">
@@ -74,13 +79,57 @@
                 </div>
             </div>
 
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="property_type">Property Type</label>
+                    <select id="property_type" name="property_type" required>
+                        <option value="house" {% if property and property.property_type == 'house' %}selected{% endif %}>House</option>
+                        <option value="apartment" {% if property and property.property_type == 'apartment' %}selected{% endif %}>Apartment</option>
+                        <option value="commercial" {% if property and property.property_type == 'commercial' %}selected{% endif %}>Commercial</option>
+                    </select>
+                </div>
+
+                <div class="form-group half">
+                    <label for="operation">Operation</label>
+                    <select id="operation" name="operation" required>
+                        <option value="Venta" {% if property and property.operation == 'Venta' %}selected{% endif %}>Venta</option>
+                        <option value="Alquiler" {% if property and property.operation == 'Alquiler' %}selected{% endif %}>Alquiler</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="list_date">List Date</label>
+                    <input type="date" id="list_date" name="list_date" value="{{ property.list_date.strftime('%Y-%m-%d') if property and property.list_date else '' }}">
+                </div>
+                
+                <div class="form-group half">
+                    <label for="list_status">List Status</label>
+                    <select id="list_status" name="list_status" required>
+                        <option value="Activo" {% if property and property.list_status == 'Activo' %}selected{% endif %}>Activo</option>
+                        <option value="Pendiente" {% if property and property.list_status == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                        <option value="Vendido" {% if property and property.list_status == 'Vendido' %}selected{% endif %}>Vendido</option>
+                        <option value="Cancelado" {% if property and property.list_status == 'Cancelado' %}selected{% endif %}>Cancelado</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group half">
+                    <label for="off_market_date">Off Market Date</label>
+                    <input type="date" id="off_market_date" name="off_market_date" value="{{ property.off_market_date.strftime('%Y-%m-%d') if property and property.off_market_date else '' }}">
+                </div>
+                
+                <div class="form-group half">
+                    <label for="close_date">Close Date</label>
+                    <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
+                </div>
+            </div>
+            
             <div class="form-group">
-                <label for="property_type">Property Type</label>
-                <select id="property_type" name="property_type" required>
-                    <option value="house" {% if property and property.property_type == 'house' %}selected{% endif %}>House</option>
-                    <option value="apartment" {% if property and property.property_type == 'apartment' %}selected{% endif %}>Apartment</option>
-                    <option value="commercial" {% if property and property.property_type == 'commercial' %}selected{% endif %}>Commercial</option>
-                </select>
+                <label for="close_price">Close Price</label>
+                <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
             </div>
 
             <div class="form-group">
@@ -94,7 +143,7 @@
     </div>
 </div>
 
-<!-- CSS for the carousel and additional styling -->
+<!-- CSS for the carousel and form layout -->
 <style>
 .image-carousel-container {
     position: relative;
