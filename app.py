@@ -238,30 +238,11 @@ def delete_property(id):
 
 @app.route('/delete_image/<int:image_id>', methods=['POST'])
 @login_required
-def delete_image(image_id):
-    image = PropertyPhoto.query.get_or_404(image_id)
-    property = Property.query.get(image.property_id)
+@app.route('/property/view/<int:id>', methods=['GET'])
+def view_property(id):
+    property = Property.query.get_or_404(id)
     
-    # Check if the current user owns this property
-    if property.realtor_id != current_user.id:
-        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
-        
-    try:
-        # For S3 storage - delete from bucket
-        image_url = image.photo_url
-        # Extract the key (filename) from the full S3 URL
-        key = image_url.replace(S3_LOCATION, '')
-        
-        # Delete from S3
-        try:
-            s3.delete_object(Bucket=S3_BUCKET, Key=key)
-        except ClientError as e:
-            print(f"Error deleting from S3: {e}")
-        
-        # Delete from database
-        db.session.delete(image)
-        db.session.commit()
-        return jsonify({'success': True})
-    except Exception as e:
-        db.session.rollback()
-        return jsonify({'success': False, 'message': str(e)})
+    # Make sure all property images are available for the template
+    property.photos = PropertyPhoto.query.filter_by(property_id=property.id).all()
+    
+    return render_template('property_view.html', property=property)

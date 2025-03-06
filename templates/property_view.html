@@ -1,0 +1,354 @@
+{% extends "base.html" %}
+
+{% block title %}{{ property.title }}{% endblock %}
+
+{% block content %}
+<div class="property-view-container">
+    <div class="property-header">
+        <h1>{{ property.title }}</h1>
+        <p class="location"><i class="fas fa-map-marker-alt"></i> {{ property.location }}</p>
+        <div class="property-badges">
+            <span class="badge operation">{{ property.operation }}</span>
+            <span class="badge status">{{ property.list_status }}</span>
+        </div>
+    </div>
+
+    <!-- Property Image Gallery -->
+    {% if property.photos and property.photos|length > 0 %}
+    <div class="property-gallery">
+        <div class="main-image">
+            <img src="{{ property.photos[0].photo_url }}" alt="{{ property.title }}" id="main-image">
+        </div>
+        {% if property.photos|length > 1 %}
+        <div class="thumbnail-container">
+            {% for photo in property.photos %}
+            <div class="thumbnail {% if loop.first %}active{% endif %}" onclick="changeMainImage('{{ photo.photo_url }}', this)">
+                <img src="{{ photo.photo_url }}" alt="Thumbnail {{ loop.index }}">
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+    {% endif %}
+
+    <!-- Property Overview -->
+    <div class="property-overview">
+        <div class="price-section">
+            <h2>${{ "{:,.2f}".format(property.price) }}</h2>
+            {% if property.close_price %}
+            <p class="closed-price">Closed: ${{ "{:,.2f}".format(property.close_price) }}</p>
+            {% endif %}
+        </div>
+        
+        <div class="specs">
+            <div class="spec">
+                <span class="value">{{ property.bedrooms }}</span>
+                <span class="label">Bedrooms</span>
+            </div>
+            <div class="spec">
+                <span class="value">{{ property.bathrooms }}</span>
+                <span class="label">Bathrooms</span>
+            </div>
+            <div class="spec">
+                <span class="value">{{ property.garage_spaces }}</span>
+                <span class="label">Garage Spaces</span>
+            </div>
+            <div class="spec">
+                <span class="value">{{ property.area }} sqft</span>
+                <span class="label">Area</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Property Details -->
+    <div class="property-details">
+        <div class="details-section">
+            <h3>About This Property</h3>
+            <p>{{ property.description }}</p>
+            
+            {% if property.property_description %}
+            <div class="full-description">
+                <h4>Detailed Description</h4>
+                <p>{{ property.property_description }}</p>
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="details-section">
+            <h3>Property Details</h3>
+            <table class="details-table">
+                <tr>
+                    <th>Property Type</th>
+                    <td>{{ property.property_type|title }}</td>
+                </tr>
+                <tr>
+                    <th>Operation</th>
+                    <td>{{ property.operation }}</td>
+                </tr>
+                <tr>
+                    <th>List Date</th>
+                    <td>{{ property.list_date.strftime('%B %d, %Y') if property.list_date else 'Not specified' }}</td>
+                </tr>
+                <tr>
+                    <th>List Status</th>
+                    <td>{{ property.list_status }}</td>
+                </tr>
+                {% if property.off_market_date %}
+                <tr>
+                    <th>Off Market Date</th>
+                    <td>{{ property.off_market_date.strftime('%B %d, %Y') }}</td>
+                </tr>
+                {% endif %}
+                {% if property.close_date %}
+                <tr>
+                    <th>Close Date</th>
+                    <td>{{ property.close_date.strftime('%B %d, %Y') }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+    </div>
+
+    <!-- Contact Realtor section - if you want to show realtor info -->
+    <div class="contact-realtor">
+        <h3>Contact Agent</h3>
+        <div class="realtor-info">
+            <p><strong>Agent:</strong> {{ property.realtor.name }}</p>
+            <p><strong>Email:</strong> {{ property.realtor.email }}</p>
+            <p><strong>Phone:</strong> {{ property.realtor.phone }}</p>
+        </div>
+    </div>
+
+    <!-- Back to search button -->
+    <div class="actions">
+        <a href="{{ url_for('search_properties') }}" class="btn-back">Back to Search</a>
+    </div>
+</div>
+
+<style>
+    .property-view-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .property-header {
+        margin-bottom: 20px;
+    }
+
+    .property-header h1 {
+        margin-bottom: 5px;
+        font-size: 28px;
+        color: #333;
+    }
+
+    .location {
+        color: #666;
+        font-size: 16px;
+        margin-bottom: 10px;
+    }
+
+    .property-badges {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .badge {
+        padding: 5px 10px;
+        border-radius: 4px;
+        font-size: 14px;
+        font-weight: 500;
+    }
+
+    .operation {
+        background-color: #e3f2fd;
+        color: #1976d2;
+    }
+
+    .status {
+        background-color: #e8f5e9;
+        color: #388e3c;
+    }
+
+    /* Gallery styles */
+    .property-gallery {
+        margin-bottom: 30px;
+    }
+
+    .main-image {
+        width: 100%;
+        height: 500px;
+        overflow: hidden;
+        border-radius: 8px;
+        margin-bottom: 10px;
+    }
+
+    .main-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .thumbnail-container {
+        display: flex;
+        gap: 10px;
+        overflow-x: auto;
+        padding: 5px 0;
+    }
+
+    .thumbnail {
+        width: 100px;
+        height: 70px;
+        cursor: pointer;
+        border-radius: 4px;
+        overflow: hidden;
+        opacity: 0.7;
+        transition: opacity 0.3s;
+    }
+
+    .thumbnail.active {
+        opacity: 1;
+        border: 2px solid #4a90e2;
+    }
+
+    .thumbnail img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Property overview section */
+    .property-overview {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+
+    .price-section h2 {
+        margin: 0;
+        font-size: 32px;
+        color: #2e7d32;
+    }
+
+    .closed-price {
+        color: #777;
+        font-size: 14px;
+        margin-top: 5px;
+    }
+
+    .specs {
+        display: flex;
+        gap: 20px;
+    }
+
+    .spec {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .spec .value {
+        font-size: 24px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .spec .label {
+        font-size: 14px;
+        color: #666;
+    }
+
+    /* Property details section */
+    .property-details {
+        margin-bottom: 30px;
+    }
+
+    .details-section {
+        margin-bottom: 30px;
+    }
+
+    .details-section h3 {
+        color: #333;
+        border-bottom: 1px solid #eee;
+        padding-bottom: 10px;
+        margin-bottom: 15px;
+    }
+
+    .full-description {
+        margin-top: 20px;
+    }
+
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    .details-table th, .details-table td {
+        padding: 12px 15px;
+        text-align: left;
+        border-bottom: 1px solid #eee;
+    }
+
+    .details-table th {
+        width: 30%;
+        color: #666;
+    }
+
+    /* Contact realtor section */
+    .contact-realtor {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+    }
+
+    .contact-realtor h3 {
+        margin-top: 0;
+        color: #333;
+    }
+
+    .realtor-info p {
+        margin: 5px 0;
+    }
+
+    /* Action buttons */
+    .actions {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+    }
+
+    .btn-back {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #4a90e2;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+
+    .btn-back:hover {
+        background-color: #3a7bc8;
+    }
+</style>
+
+<script>
+    function changeMainImage(src, thumbnail) {
+        document.getElementById('main-image').src = src;
+        // Remove active class from all thumbnails
+        document.querySelectorAll('.thumbnail').forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        // Add active class to clicked thumbnail
+        thumbnail.classList.add('active');
+    }
+</script>
+{% endblock %}
