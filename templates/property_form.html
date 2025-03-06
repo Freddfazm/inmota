@@ -3,8 +3,8 @@
 {% block title %}{{ 'Edit' if property else 'Add' }} Property{% endblock %}
 
 {% block content %}
-<div class="login-wrapper">
-    <div class="login-container">
+<div class="form-wrapper">
+    <div class="form-container property-form-container">
         <h2>{% if property %}Edit Property{% else %}Add New Property{% endif %}</h2>
         
         {% if property and property.photos %}
@@ -29,122 +29,163 @@
         </div>
         {% endif %}
         
-        <form method="POST" enctype="multipart/form-data" class="login-form">
-            <div class="form-group">
-                <label for="title">Title</label>
-                <input type="text" id="title" name="title" value="{{ property.title if property else '' }}" required>
-            </div>
-
-            <div class="form-group">
-                <label for="description">Short Description</label>
-                <textarea id="description" name="description" required>{{ property.description if property else '' }}</textarea>
-            </div>
-            
-            <div class="form-group">
-                <label for="property_description">Detailed Property Description (max 5000 chars)</label>
-                <textarea id="property_description" name="property_description" rows="5" maxlength="5000">{{ property.property_description if property and property.property_description else '' }}</textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="location">Location</label>
-                <input type="text" id="location" name="location" value="{{ property.location if property else '' }}" required>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="price">Price</label>
-                    <input type="number" id="price" name="price" value="{{ property.price if property else '' }}" required>
-                </div>
-
-                <div class="form-group half">
-                    <label for="area">Area (sqft)</label>
-                    <input type="number" id="area" name="area" value="{{ property.area if property else '' }}" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group third">
-                    <label for="bedrooms">Bedrooms</label>
-                    <input type="number" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
-                </div>
-
-                <div class="form-group third">
-                    <label for="bathrooms">Bathrooms</label>
-                    <input type="number" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
+        <form method="POST" enctype="multipart/form-data" class="property-form">
+            <div class="form-columns">
+                <!-- Left Column - Basic Information -->
+                <div class="form-column">
+                    <h3 class="section-title">Basic Information</h3>
+                    
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" id="title" name="title" value="{{ property.title if property else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="location">Location</label>
+                        <input type="text" id="location" name="location" value="{{ property.location if property else '' }}" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="description">Short Description</label>
+                        <textarea id="description" name="description" required>{{ property.description if property else '' }}</textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="property_type">Property Type</label>
+                            <select id="property_type" name="property_type" required>
+                                <option value="house" {% if property and property.property_type == 'house' %}selected{% endif %}>House</option>
+                                <option value="apartment" {% if property and property.property_type == 'apartment' %}selected{% endif %}>Apartment</option>
+                                <option value="commercial" {% if property and property.property_type == 'commercial' %}selected{% endif %}>Commercial</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group half">
+                            <label for="operation">Operation</label>
+                            <select id="operation" name="operation" required>
+                                <option value="Venta" {% if property and property.operation == 'Venta' %}selected{% endif %}>Venta</option>
+                                <option value="Alquiler" {% if property and property.operation == 'Alquiler' %}selected{% endif %}>Alquiler</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="form-group third">
-                    <label for="garage_spaces">Garage Spaces</label>
-                    <input type="number" id="garage_spaces" name="garage_spaces" value="{{ property.garage_spaces if property else '0' }}" min="0" required>
-                </div>
-            </div>
-
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="property_type">Property Type</label>
-                    <select id="property_type" name="property_type" required>
-                        <option value="house" {% if property and property.property_type == 'house' %}selected{% endif %}>House</option>
-                        <option value="apartment" {% if property and property.property_type == 'apartment' %}selected{% endif %}>Apartment</option>
-                        <option value="commercial" {% if property and property.property_type == 'commercial' %}selected{% endif %}>Commercial</option>
-                    </select>
-                </div>
-
-                <div class="form-group half">
-                    <label for="operation">Operation</label>
-                    <select id="operation" name="operation" required>
-                        <option value="Venta" {% if property and property.operation == 'Venta' %}selected{% endif %}>Venta</option>
-                        <option value="Alquiler" {% if property and property.operation == 'Alquiler' %}selected{% endif %}>Alquiler</option>
-                    </select>
+                <!-- Right Column - Property Details -->
+                <div class="form-column">
+                    <h3 class="section-title">Property Details</h3>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="price">Price</label>
+                            <input type="number" id="price" name="price" value="{{ property.price if property else '' }}" required>
+                        </div>
+                        
+                        <div class="form-group half">
+                            <label for="area">Area (sqft)</label>
+                            <input type="number" id="area" name="area" value="{{ property.area if property else '' }}" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-row three-col">
+                        <div class="form-group">
+                            <label for="bedrooms">Bedrooms</label>
+                            <input type="number" id="bedrooms" name="bedrooms" value="{{ property.bedrooms if property else '' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="bathrooms">Bathrooms</label>
+                            <input type="number" id="bathrooms" name="bathrooms" value="{{ property.bathrooms if property else '' }}" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="garage_spaces">Garage</label>
+                            <input type="number" id="garage_spaces" name="garage_spaces" value="{{ property.garage_spaces if property else '0' }}" min="0" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="list_status">List Status</label>
+                        <select id="list_status" name="list_status" required>
+                            <option value="Activo" {% if property and property.list_status == 'Activo' %}selected{% endif %}>Activo</option>
+                            <option value="Pendiente" {% if property and property.list_status == 'Pendiente' %}selected{% endif %}>Pendiente</option>
+                            <option value="Vendido" {% if property and property.list_status == 'Vendido' %}selected{% endif %}>Vendido</option>
+                            <option value="Cancelado" {% if property and property.list_status == 'Cancelado' %}selected{% endif %}>Cancelado</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group half">
+                            <label for="list_date">List Date</label>
+                            <input type="date" id="list_date" name="list_date" value="{{ property.list_date.strftime('%Y-%m-%d') if property and property.list_date else '' }}">
+                        </div>
+                        
+                        <div class="form-group half">
+                            <label for="close_date">Close Date</label>
+                            <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="close_price">Close Price</label>
+                        <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
+                    </div>
                 </div>
             </div>
             
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="list_date">List Date</label>
-                    <input type="date" id="list_date" name="list_date" value="{{ property.list_date.strftime('%Y-%m-%d') if property and property.list_date else '' }}">
+            <!-- Full Width Elements -->
+            <div class="form-full-width">
+                <div class="form-group">
+                    <label for="property_description">Detailed Property Description (max 5000 chars)</label>
+                    <textarea id="property_description" name="property_description" rows="5" maxlength="5000">{{ property.property_description if property and property.property_description else '' }}</textarea>
                 </div>
                 
-                <div class="form-group half">
-                    <label for="list_status">List Status</label>
-                    <select id="list_status" name="list_status" required>
-                        <option value="Activo" {% if property and property.list_status == 'Activo' %}selected{% endif %}>Activo</option>
-                        <option value="Pendiente" {% if property and property.list_status == 'Pendiente' %}selected{% endif %}>Pendiente</option>
-                        <option value="Vendido" {% if property and property.list_status == 'Vendido' %}selected{% endif %}>Vendido</option>
-                        <option value="Cancelado" {% if property and property.list_status == 'Cancelado' %}selected{% endif %}>Cancelado</option>
-                    </select>
-                </div>
-            </div>
-            
-            <div class="form-row">
-                <div class="form-group half">
-                    <label for="off_market_date">Off Market Date</label>
-                    <input type="date" id="off_market_date" name="off_market_date" value="{{ property.off_market_date.strftime('%Y-%m-%d') if property and property.off_market_date else '' }}">
+                <div class="form-group">
+                    <label for="photos">Photos</label>
+                    <input type="file" id="photos" name="photos" multiple accept="image/*">
+                    <small class="form-text">Select multiple files to upload several images at once.</small>
                 </div>
                 
-                <div class="form-group half">
-                    <label for="close_date">Close Date</label>
-                    <input type="date" id="close_date" name="close_date" value="{{ property.close_date.strftime('%Y-%m-%d') if property and property.close_date else '' }}">
-                </div>
+                <button type="submit" class="btn btn-primary">{% if property %}Update Property{% else %}Add Property{% endif %}</button>
             </div>
-            
-            <div class="form-group">
-                <label for="close_price">Close Price</label>
-                <input type="number" id="close_price" name="close_price" value="{{ property.close_price if property and property.close_price else '' }}" step="0.01">
-            </div>
-
-            <div class="form-group">
-                <label for="photos">Photos</label>
-                <input type="file" id="photos" name="photos" multiple accept="image/*">
-                <small class="form-text">Select multiple files to upload several images at once.</small>
-            </div>
-
-            <button type="submit" class="btn-login">{% if property %}Update Property{% else %}Add Property{% endif %}</button>
         </form>
     </div>
 </div>
 
 <!-- CSS for the carousel and form layout -->
 <style>
+/* Form Layout */
+.property-form-container {
+    max-width: 1000px;
+    width: 100%;
+}
+
+.form-columns {
+    display: flex;
+    gap: 2rem;
+}
+
+.form-column {
+    flex: 1;
+}
+
+.form-full-width {
+    margin-top: 2rem;
+}
+
+.section-title {
+    margin-top: 0;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.three-col {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1rem;
+}
+
+/* Carousel Styles */
 .image-carousel-container {
     position: relative;
     width: 100%;
@@ -232,15 +273,17 @@
     background-color: white;
 }
 
-/* Style for three columns layout */
-.form-row .third {
-    width: 32%;
-    display: inline-block;
-    margin-right: 1%;
-}
-
-.form-row .third:last-child {
-    margin-right: 0;
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .form-columns {
+        flex-direction: column;
+        gap: 1rem;
+    }
+    
+    .three-col {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+    }
 }
 </style>
 
