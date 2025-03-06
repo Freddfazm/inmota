@@ -1,4 +1,4 @@
-from flask import Flask, render_template, redirect, url_for, flash, request
+from flask import Flask, render_template, redirect, url_for, flash, request, jsonify, abort
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
@@ -187,6 +187,8 @@ def edit_property(id):
         flash('Property updated successfully!', 'success')
         return redirect(url_for('properties'))
     
+    # Make sure all property images are passed to the template
+    property.images = PropertyPhoto.query.filter_by(property_id=property.id).all()
     return render_template('property_form.html', property=property)
 
 if __name__ == '__main__':
@@ -233,3 +235,33 @@ def delete_property(id):
     db.session.delete(property)
     db.session.commit()
     return redirect(url_for('properties'))
+
+@app.route('/delete_image/<int:image_id>', methods=['POST'])
+@login_required
+def delete_image(image_id):
+    image = PropertyPhoto.query.get_or_404(image_id)
+    property = Property.query.get(image.property_id)
+    
+    # Check if the current user owns this property
+    if property.realtor_id != current_user.id:
+        return jsonify({'success': False, 'message': 'Unauthorized'}), 403
+        
+    try:
+        # For S3 storage - delete from bucket
+        image_url = image.photo_url
+        # Extract the key (filename) from the full S3 URL
+        key = image_url.replace(S3_LOCATION, '')
+        
+        # Delete from S3
+        try:
+            s3.delete_object(Bucket=S3_BUCKET, Key=key)
+        except ClientError as e:
+            print(f"Error deleting from S3: {e}")
+        
+        # Delete from database
+        db.session.delete(image)
+        db.session.commit()
+        return jsonify({'success': True})
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({'success': False, 'message': str(e)})
